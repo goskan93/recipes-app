@@ -1,19 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
-
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { CATEGORIES } from "../data/data";
+import CategoryGrid from "../components/CategoryGrid";
 const CategoriesScreen = (props) => {
-  console.log(props);
   return (
-    <View style={styles.screen}>
-      <Text>The Categories Screen</Text>
-      <Button
-        title="Go to Meals"
-        onPress={() => {
-          props.navigation.navigate({ routeName: "CategoryMeals" });
-        }}
-      />
-    </View>
+    <FlatList
+      numColumns={2}
+      data={CATEGORIES}
+      renderItem={({ item }) => (
+        <CategoryGrid title={item.title} color={item.color} onPress={() => props.navigation.navigate("CategoryMeals", { id: item.id })} />
+      )}
+    />
   );
+};
+
+CategoriesScreen.navigationOptions = {
+  headerTitle: () => <Text style={{ textAlign: "center", color: "#fff" }}>Meal Categories</Text>,
 };
 
 const styles = StyleSheet.create({

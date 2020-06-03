@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import Navigator from "./navigation/Navigator";
+import { enableScreens } from "react-native-screens";
+
+enableScreens();
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -17,12 +20,7 @@ export default function App() {
   if (!fontLoaded) {
     return <AppLoading startAsync={fetchFonts} onFinish={() => setFontLoaded(true)} />;
   }
-  return (
-    // <View style={styles.container}>
-    //   <Text>Open up App.js to start working on your app!</Text>
-    // </View>
-    <Navigator />
-  );
+  return <Navigator />;
 }
 
 const styles = StyleSheet.create({
