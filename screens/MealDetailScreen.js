@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { View, StyleSheet, Text, ScrollView, Image } from "react-native";
-import { MEALS } from "../data/data";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import ButtonHeader from "../components/ButtonHeader";
-
+import { useSelector, useDispatch } from "react-redux";
+import { toggleFavourite } from "../store/actions/meals";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 const ListEl = (props) => {
   return (
     <View style={styles.listItem}>
@@ -13,8 +14,24 @@ const ListEl = (props) => {
 };
 
 const MealDetailScreen = (props) => {
+  const { navigation } = props;
   const id = props.navigation.getParam("id");
+  const MEALS = useSelector((store) => store.meals.meals);
+  // const isFav = useSelector((store) => store.meals.favoriteMeals.some((x) => x.id === id));
   const meal = MEALS.find((x) => x.id === id);
+
+  const dispatch = useDispatch();
+  const toggleFav = useCallback(() => {
+    dispatch(toggleFavourite(id));
+  }, [toggleFavourite, dispatch]);
+
+  useEffect(() => {
+    navigation.setParams({ toggleFav: toggleFav });
+  }, [toggleFav]);
+
+  // useEffect(() => {
+  //   navigation.setParams({ isFav: isFav });
+  // }, [isFav]);
 
   return (
     <ScrollView>
@@ -37,13 +54,14 @@ const MealDetailScreen = (props) => {
 };
 
 MealDetailScreen.navigationOptions = (navigationData) => {
-  const id = navigationData.navigation.getParam("id");
-  const selectedMeal = MEALS.find((x) => x.id === id);
+  const title = navigationData.navigation.getParam("title");
+  const toggleFav = navigationData.navigation.getParam("toggleFav");
+  const isFav = navigationData.navigation.getParam("isFav");
   return {
-    headerTitle: () => <Text style={{ textAlign: "center", color: "#fff" }}>{selectedMeal.title}</Text>,
+    headerTitle: () => <Text style={{ textAlign: "center", color: "#fff" }}>{title}</Text>,
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={ButtonHeader}>
-        <Item title="Favorite" iconName="ios-star" onPress={() => {}} />
+        <Item title="Favorite" iconName={isFav ? "ios-star" : "ios-star-outline"} onPress={() => toggleFav()} />
       </HeaderButtons>
     ),
   };
